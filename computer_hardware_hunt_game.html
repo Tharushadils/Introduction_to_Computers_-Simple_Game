@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Hardware Hunt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="p-2 sm:p-4 md:p-6 flex flex-col justify-between items-center relative">
+
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Top Navigation Header -->
+    <header class="w-full max-w-5xl flex justify-between items-center mb-4 px-3 py-2 glass-panel rounded-2xl z-10">
+        <div class="flex items-center gap-3">
+            <span class="text-3xl sm:text-4xl">🖥️</span>
+            <div>
+                <h1 class="text-lg sm:text-2xl font-bold text-indigo-900 leading-none">HARDWARE HUNT</h1>
+                <span id="levelIndicatorText" class="text-xs sm:text-sm text-indigo-600 font-semibold">Welcome Explorer!</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-6">
+            <!-- Score & Stars -->
+            <div class="flex items-center gap-3 bg-indigo-50 px-3 py-1.5 rounded-xl border-2 border-indigo-200">
+                <div class="flex items-center gap-1">
+                    <span class="text-xl">⭐</span>
+                    <span id="scoreDisplay" class="font-bold text-xl text-amber-600">0</span>
+                </div>
+                <div class="h-6 w-0.5 bg-indigo-200"></div>
+                <div class="flex items-center gap-1">
+                    <span class="text-xl">❤️</span>
+                    <span id="livesDisplay" class="font-bold text-xl text-red-500">3</span>
+                </div>
+            </div>
+
+            <!-- Audio Toggle Button -->
+            <button id="soundToggleBtn" onclick="toggleSound()" class="bg-indigo-100 hover:bg-indigo-200 p-2.5 rounded-xl text-2xl transition border-2 border-indigo-300" title="Toggle Sound">
+                🔊
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN GAME CONTAINER -->
+    <main id="gameContainer" class="w-full max-w-5xl flex-1 flex flex-col justify-center items-center relative z-10">
+        
+        <!-- ---------------- SCREEN 1: START SCREEN ---------------- -->
+        <section id="startScreen" class="w-full flex flex-col items-center text-center glass-panel rounded-3xl p-6 sm:p-10 my-auto">
+            <div class="relative mb-6">
+                <!-- SVG Mascot -->
+                <div class="w-36 h-36 sm:w-48 sm:h-48 animate-float mx-auto relative">
+                    <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-xl">
+                        <rect x="20" y="20" width="160" height="120" rx="15" fill="#4f46e5" stroke="#312e81" stroke-width="8"/>
+                        <rect x="35" y="35" width="130" height="90" rx="8" fill="#38bdf8"/>
+                        <!-- Mascot Eyes -->
+                        <circle cx="75" cy="70" r="14" fill="#ffffff"/>
+                        <circle cx="125" cy="70" r="14" fill="#ffffff"/>
+                        <circle cx="78" cy="72" r="7" fill="#0f172a"/>
+                        <circle cx="128" cy="72" r="7" fill="#0f172a"/>
+                        <circle cx="81" cy="68" r="3" fill="#ffffff"/>
+                        <circle cx="131" cy="68" r="3" fill="#ffffff"/>
+                        <!-- Cheeks -->
+                        <ellipse cx="60" cy="88" rx="8" ry="5" fill="#f43f5e" opacity="0.6"/>
+                        <ellipse cx="140" cy="88" rx="8" ry="5" fill="#f43f5e" opacity="0.6"/>
+                        <!-- Smile -->
+                        <path d="M 85 95 Q 100 115 115 95" fill="none" stroke="#0f172a" stroke-width="5" stroke-linecap="round"/>
+                        <!-- Stand -->
+                        <polygon points="85,140 115,140 125,165 75,165" fill="#312e81"/>
+                        <rect x="60" y="165" width="80" height="15" rx="5" fill="#4f46e5"/>
+                    </svg>
+                    <!-- Floating Star Badges -->
+                    <span class="absolute -top-2 -right-2 text-4xl animate-bounce">✨</span>
+                </div>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl font-black text-indigo-950 tracking-wide mb-2">COMPUTER HARDWARE HUNT</h1>
+            <p class="text-base sm:text-xl text-indigo-700 font-bold mb-8">Can you find all the computer parts and become a Hardware Master?</p>
+
+            <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+                <button onclick="startGame()" class="btn-bounce btn-green text-white font-black text-xl sm:text-2xl px-8 py-4 rounded-2xl flex-1 flex items-center justify-center gap-3">
+                    <span>▶</span> START GAME
+                </button>
+                <button onclick="openHowToPlay()" class="btn-bounce btn-purple text-white font-black text-xl sm:text-2xl px-6 py-4 rounded-2xl flex items-center justify-center gap-2">
+                    <span>❓</span> HOW TO PLAY
+                </button>
+            </div>
+
+            <!-- Mini Badges preview -->
+            <div class="mt-8 flex flex-wrap justify-center gap-3 text-xs sm:text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-200">
+                <span>4 Exciting Levels</span> • <span>Interactive Lab</span> • <span>Desk Builder</span> • <span>Earn Medals</span>
+            </div>
+        </section>
+
+        <!-- ---------------- SCREEN 2: LEVEL 1 (FIND THE HARDWARE) ---------------- -->
+        <section id="level1Screen" class="w-full hidden flex-col glass-panel rounded-3xl p-4 sm:p-6 my-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mb-4 bg-indigo-100 p-3 rounded-2xl border-2 border-indigo-300">
+                <div class="flex items-center gap-2">
+                    <span class="bg-indigo-600 text-white font-black text-sm px-3 py-1 rounded-full">LEVEL 1</span>
+                    <h2 id="l1MissionText" class="text-lg sm:text-xl font-extrabold text-indigo-950">🔎 Find the KEYBOARD!</h2>
+                </div>
+                <div class="w-full sm:w-48 bg-gray-200 rounded-full h-4 overflow-hidden border border-gray-300">
+                    <div id="l1ProgressBar" class="bg-amber-400 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Lab Scene Canvas Grid -->
+            <div class="relative w-full h-[380px] sm:h-[450px] bg-gradient-to-b from-sky-200 via-sky-100 to-amber-100 rounded-2xl border-4 border-indigo-300 overflow-hidden shadow-inner flex flex-col justify-end">
+                <!-- Lab Background Wall Elements -->
+                <div class="absolute top-4 left-6 bg-white/80 border-2 border-sky-300 rounded-xl p-2 text-xs text-sky-800 font-bold hidden sm:block">
+                    🏫 Computer Lab 101
+                </div>
+                <div class="absolute top-4 right-6 flex gap-2">
+                    <div class="w-12 h-16 bg-emerald-400 rounded-md border-2 border-emerald-600 opacity-60"></div>
+                    <div class="w-16 h-20 bg-amber-300 rounded-md border-2 border-amber-500 opacity-60"></div>
+                </div>
+
+                <!-- Lab Desk Base -->
+                <div class="lab-desk w-full h-36 sm:h-44 relative flex items-end justify-around px-2 sm:px-6"></div>
+
+                <!-- Floating Interactive Hardware Objects Container -->
+                <div id="l1ObjectsGrid" class="absolute inset-0 p-4 grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4 items-center justify-items-center">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ---------------- SCREEN 3: LEVEL 2 (MATCH THE HARDWARE) ---------------- -->
+        <section id="level2Screen" class="w-full hidden flex-col glass-panel rounded-3xl p-4 sm:p-6 my-auto">
+            <div class="flex justify-between items-center mb-4 bg-indigo-100 p-3 rounded-2xl border-2 border-indigo-300">
+                <div>
+                    <span class="bg-purple-600 text-white font-black text-sm px-3 py-1 rounded-full">LEVEL 2</span>
+                    <h2 class="inline text-lg sm:text-xl font-extrabold text-indigo-950 ml-2">🧩 Drag & Match Hardware to Name!</h2>
+                </div>
+                <span id="l2MatchCount" class="font-bold text-indigo-700 bg-white px-3 py-1 rounded-xl border border-indigo-200">0 / 6 Matched</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <!-- Left: Hardware Icons Dock -->
+                <div class="bg-indigo-50/80 p-4 rounded-2xl border-2 border-indigo-200 flex flex-col items-center">
+                    <h3 class="text-sm font-bold text-indigo-800 uppercase mb-3">Drag Component 📦</h3>
+                    <div id="l2Draggables" class="grid grid-cols-3 gap-3 w-full justify-items-center">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Right: Drop Target Names -->
+                <div class="bg-white/80 p-4 rounded-2xl border-2 border-indigo-200 flex flex-col items-center">
+                    <h3 class="text-sm font-bold text-indigo-800 uppercase mb-3">Drop to Name 🎯</h3>
+                    <div id="l2DropTargets" class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-h-[320px] overflow-y-auto custom-scrollbar p-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ---------------- SCREEN 4: LEVEL 3 (BUILD THE COMPUTER) ---------------- -->
+        <section id="level3Screen" class="w-full hidden flex-col glass-panel rounded-3xl p-4 sm:p-6 my-auto">
+            <div class="flex justify-between items-center mb-3 bg-indigo-100 p-3 rounded-2xl border-2 border-indigo-300">
+                <div>
+                    <span class="bg-emerald-600 text-white font-black text-sm px-3 py-1 rounded-full">LEVEL 3</span>
+                    <h2 class="inline text-lg sm:text-xl font-extrabold text-indigo-950 ml-2">🛠️ Build the Computer Desk Setup!</h2>
+                </div>
+                <span id="l3BuildStatus" class="font-bold text-emerald-800 bg-white px-3 py-1 rounded-xl border border-emerald-300">0 / 5 Assembled</span>
+            </div>
+
+            <!-- Empty Desk Visual Area -->
+            <div id="deskCanvas" class="relative w-full h-[280px] sm:h-[320px] bg-gradient-to-b from-indigo-100 to-amber-50 rounded-2xl border-4 border-indigo-300 overflow-hidden shadow-inner flex flex-col justify-end">
+                <div class="absolute top-2 left-3 text-xs font-bold text-indigo-400">Computer Desk Workstation</div>
+                
+                <!-- Target Drop Zones on Desk -->
+                <div class="absolute inset-0 grid grid-cols-12 grid-rows-6 p-2 gap-1 pointer-events-none">
+                    <!-- Monitor Zone (Center-Top) -->
+                    <div data-target-id="monitor" class="drop-target pointer-events-auto col-span-6 col-start-4 row-span-4 rounded-xl flex items-center justify-center text-xs font-bold text-indigo-400 border-2 border-dashed">
+                        Monitor Drop Slot 🖥️
+                    </div>
+                    <!-- CPU Zone (Right Side) -->
+                    <div data-target-id="cpu" class="drop-target pointer-events-auto col-span-3 col-start-10 row-span-5 rounded-xl flex items-center justify-center text-xs font-bold text-indigo-400 border-2 border-dashed">
+                        CPU Slot 🎛️
+                    </div>
+                    <!-- Keyboard Zone (Center-Bottom) -->
+                    <div data-target-id="keyboard" class="drop-target pointer-events-auto col-span-5 col-start-3 row-span-2 row-start-5 rounded-xl flex items-center justify-center text-xs font-bold text-indigo-400 border-2 border-dashed">
+                        Keyboard Slot ⌨️
+                    </div>
+                    <!-- Mouse Zone (Bottom-Right) -->
+                    <div data-target-id="mouse" class="drop-target pointer-events-auto col-span-2 col-start-8 row-span-2 row-start-5 rounded-xl flex items-center justify-center text-xs font-bold text-indigo-400 border-2 border-dashed">
+                        Mouse Slot 🖱️
+                    </div>
+                    <!-- Speakers Zone (Left Side) -->
+                    <div data-target-id="speaker" class="drop-target pointer-events-auto col-span-2 col-start-1 row-span-4 rounded-xl flex items-center justify-center text-xs font-bold text-indigo-400 border-2 border-dashed">
+                        Speakers Slot 🔊
+                    </div>
+                </div>
+
+                <!-- Desk Surface -->
+                <div class="w-full h-12 bg-amber-800 border-t-8 border-amber-600"></div>
+            </div>
+
+            <!-- Parts Palette Bar -->
+            <div class="mt-4 bg-indigo-50 p-3 rounded-2xl border-2 border-indigo-200">
+                <p class="text-xs font-bold text-indigo-700 uppercase mb-2 text-center">Drag Parts onto Desk Slots:</p>
+                <div id="l3PartsPalette" class="flex flex-wrap justify-center gap-3">
+                    <!-- Dynamic draggable parts -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ---------------- SCREEN 5: LEVEL 4 (FINAL QUIZ CHALLENGE) ---------------- -->
+        <section id="level4Screen" class="w-full hidden flex-col glass-panel rounded-3xl p-4 sm:p-8 my-auto max-w-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <span class="bg-amber-500 text-white font-black text-sm px-4 py-1.5 rounded-full">FINAL CHALLENGE</span>
+                <div class="flex items-center gap-2 bg-amber-100 border-2 border-amber-300 px-3 py-1 rounded-xl">
+                    <span class="text-lg">⏱️</span>
+                    <span id="quizTimer" class="font-black text-xl text-amber-700">10s</span>
+                </div>
+            </div>
+
+            <div class="text-center mb-6">
+                <div id="quizImageContainer" class="w-32 h-32 mx-auto mb-4 p-2 bg-white rounded-2xl border-4 border-indigo-200 shadow-md flex items-center justify-center">
+                    <!-- Hardware SVG or icon inserted here -->
+                </div>
+                <h3 id="quizQuestionText" class="text-xl sm:text-2xl font-black text-indigo-950">What is this component used for?</h3>
+            </div>
+
+            <div id="quizOptionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+                <!-- 4 Choice buttons populated dynamically -->
+            </div>
+        </section>
+
+        <!-- ---------------- SCREEN 6: FINAL SCORE SCREEN ---------------- -->
+        <section id="finalScoreScreen" class="w-full hidden flex-col items-center text-center glass-panel rounded-3xl p-6 sm:p-10 my-auto">
+            <div class="text-6xl mb-2 animate-bounce">🏆</div>
+            <h1 class="text-3xl sm:text-4xl font-black text-indigo-950 mb-1">CONGRATULATIONS!</h1>
+            <p id="rankSubtitle" class="text-lg sm:text-xl font-bold text-amber-600 mb-6">You are a Hardware Master!</p>
+
+            <!-- Rank Badge Card -->
+            <div class="w-full max-w-md bg-gradient-to-br from-amber-100 to-amber-50 border-4 border-amber-300 rounded-2xl p-4 mb-6 shadow-md flex items-center justify-around">
+                <div class="text-5xl" id="rankMedalIcon">🥇</div>
+                <div class="text-left">
+                    <div class="text-xs uppercase font-bold text-amber-800">Your Earned Rank</div>
+                    <div id="rankTitle" class="text-2xl font-black text-amber-900">Hardware Master</div>
+                    <div id="accuracyText" class="text-sm font-semibold text-amber-700">Accuracy: 100%</div>
+                </div>
+            </div>
+
+            <!-- Detailed Stats Grid -->
+            <div class="grid grid-cols-3 gap-3 w-full max-w-md mb-8">
+                <div class="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-3 text-center">
+                    <div class="text-xs font-bold text-indigo-600 uppercase">Total Score</div>
+                    <div id="finalScoreVal" class="text-2xl font-black text-indigo-900">0</div>
+                </div>
+                <div class="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-3 text-center">
+                    <div class="text-xs font-bold text-indigo-600 uppercase">Stars Earned</div>
+                    <div id="finalStarsVal" class="text-2xl font-black text-amber-600">0 ⭐</div>
+                </div>
+                <div class="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-3 text-center">
+                    <div class="text-xs font-bold text-indigo-600 uppercase">Time Spent</div>
+                    <div id="finalTimeVal" class="text-2xl font-black text-indigo-900">0s</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+                <button onclick="startGame()" class="btn-bounce btn-green text-white font-black text-xl px-6 py-4 rounded-2xl flex-1">
+                    🔄 PLAY AGAIN
+                </button>
+                <button onclick="showStartScreen()" class="btn-bounce btn-orange text-white font-black text-xl px-6 py-4 rounded-2xl flex-1">
+                    🏠 MAIN MENU
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ---------------- MODAL 1: EDUCATIONAL FACT POPUP ---------------- -->
+    <div id="factModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl p-6 max-w-md w-full text-center transform transition-all scale-100 animate-bounce-short">
+            <div class="text-5xl mb-2">🎉</div>
+            <h2 id="factTitle" class="text-2xl font-black text-indigo-950 mb-2">Correct!</h2>
+            <div id="factSvgContainer" class="w-24 h-24 mx-auto mb-3"></div>
+            <p id="factDescription" class="text-base sm:text-lg font-bold text-indigo-800 bg-indigo-50 p-4 rounded-2xl border border-indigo-200 mb-6">
+                A keyboard is used to type letters, numbers and symbols.
+            </p>
+            <button onclick="closeFactModal()" class="btn-bounce btn-green text-white font-black text-xl w-full py-3 rounded-2xl">
+                CONTINUE ▶
+            </button>
+        </div>
+    </div>
+
+    <!-- ---------------- MODAL 2: HOW TO PLAY ---------------- -->
+    <div id="howToPlayModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl p-6 max-w-lg w-full text-left">
+            <div class="flex justify-between items-center mb-4 border-b-2 border-indigo-100 pb-2">
+                <h2 class="text-2xl font-black text-indigo-950">❓ How to Play</h2>
+                <button onclick="closeHowToPlay()" class="text-2xl font-black text-indigo-400 hover:text-indigo-600">✕</button>
+            </div>
+            
+            <div class="space-y-4 text-indigo-900 font-semibold text-sm sm:text-base max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+                <div class="flex items-start gap-3 bg-indigo-50 p-3 rounded-xl">
+                    <span class="text-2xl">🔎</span>
+                    <div>
+                        <div class="font-extrabold text-indigo-950">Level 1: Lab Hunt</div>
+                        <div>Look closely at the lab scene and click on the computer component requested in the mission header!</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 bg-indigo-50 p-3 rounded-xl">
+                    <span class="text-2xl">🧩</span>
+                    <div>
+                        <div class="font-extrabold text-indigo-950">Level 2: Hardware Match</div>
+                        <div>Drag components from the left dock onto their corresponding names on the right.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 bg-indigo-50 p-3 rounded-xl">
+                    <span class="text-2xl">🛠️</span>
+                    <div>
+                        <div class="font-extrabold text-indigo-950">Level 3: Build the Computer</div>
+                        <div>Assemble an entire computer workstation by dragging parts onto the desk slots.</div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 bg-indigo-50 p-3 rounded-xl">
+                    <span class="text-2xl">⚡</span>
+                    <div>
+                        <div class="font-extrabold text-indigo-950">Level 4: Hardware Master</div>
+                        <div>Test your knowledge! Answer multiple-choice questions before the 10-second timer runs out.</div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="closeHowToPlay()" class="btn-bounce btn-purple text-white font-black text-lg w-full py-3 rounded-2xl mt-6">
+                GOT IT!
+            </button>
+        </div>
+    </div>
+
+    <!-- ---------------- JAVASCRIPT GAME ENGINE ---------------- -->
+    <script src="script.js"></script>
+</body>
+</html>
