@@ -1,7 +1,9 @@
 # 🖥️ Computer Hardware Hunt
 
 Play this game:
-https://tharushadils.github.io/Introduction_to_Computers_-Simple_Game/
+
+
+[👉👉Play👈👈](https://tharushadils.github.io/Introduction_to_Computers_-Simple_Game/)
 
 
 **Computer Hardware Hunt** is a fun, colorful, and highly interactive educational browser mini-game designed for Grade 5 students (ages 10–11). It teaches primary students how to identify essential computer hardware components and understand their functions through an engaging 4-level quest.
