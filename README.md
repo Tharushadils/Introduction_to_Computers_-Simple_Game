@@ -1,4 +1,6 @@
 # 🖥️ Computer Hardware Hunt
+
+Play this game:
 https://tharushadils.github.io/Introduction_to_Computers_-Simple_Game/
 
 
